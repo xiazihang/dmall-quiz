@@ -4,21 +4,33 @@
 我们现在做一个关于"京西商城"的综合练习，只需要按照题目要求实现所有的接口，确保测试通过，没有前端页面题目。需求如下：
 
 #### 功能需求
-- 产品运营人员可以添加新的商品，编辑商品库存，并发布到京西商城，用户可以进行购买
-- 京西商城的买家可以查看所有产品，可以按照名字，价格搜索商品
-- 京西商城的买家可以查看产品的可购买数量，并生成购买订单，买家可以撤销订单，查看订单状态，对订单进行支付(模拟)。
-- 支付成功后，生成物流单，进行派送。同时买家可以查看物流状态以及确认收货。目前不支持退换货。
-- 当用户发起一个订单时，对应商品的数量应该被锁定
+- 用户可以添加新的商品，可以分别通过商品的`名称`，`描述`进行模糊查询，可以对商品的`名称`，`描述`,`价格`做修改。
+- 用户可以创建商品的库存信息，修改商品的库存数量
+- 用户可以创建一张订单：
+  - 需要创建对应商品的货物信息
+  - 在库存信息中锁定库存数量
+- 用户可以查看订单信息以及订单中所有商品的信息 
+- 用户可以根据用户Id查看该用户拥有的所有订单
+- 用户可以对未支付的订单进行撤销
+  - 系统需要解锁库存数量，并修改订单状态，记录相应时间
+- 用户可以对创建的订单进行支付(支付功能只需要修改订单状态即可)
+- 系统需要对支付成功的订单创建物流订单，同时修改订单状态并修改库存数量
+- 用户可以查看物流状态(or查看物流订单)
+- 当货物到达，用户可以签收货物
+  - 系统需要修改订单状态，以及物流订单状态并记录时间
+
 
 
 #### 实体及字段要求
-- 在京西商城中存在实体：商品(product)，库存信息(inventory)，货物(goods)，订单(order)，物流单(LogisticsRecord)，针对每一种实体，都有相应的API
-- 商品(product)实体包含字段有：id, name, description, inventoryId
-- 库存信息(inventory)实体包含字段有：id, productId, count, actualCount
-- 货物(goods)实体包含字段：id, 
-- 订单(order)实体包含的字段有：id, 
-- 物流单(LogisticsRecord)实体包含字段有
-
+- 在京西商城中存在实体：商品(product)，库存信息(inventory)，货物(goods)，订单(order)，物流单(LogisticsRecord)
+- 商品(product)实体包含字段有：id, name, description, price
+- 库存信息(inventory)实体包含字段有：id, lockedCount, count
+- 购买货物(purchaseItem)实体包含字段：id, productName, productDescription, purchasePrice, purchaseCount
+- 订单(order)实体包含字段：id, totalPrice, status, createTime, finishTime, paidTime, withdrawnTime
+  - 支付状态(status)有：unPaid, paid, withDrawn, finished 
+- 物流单(LogisticsRecord)实体包含字段有：id, LogisticsStatus, OutboundTime, signedTime, deliveryMan
+  - 物流状态(LogisticsStatus)有：readyToShip, Shipping, Signed
+  
 #### 题目要求
 - 使用docker中的jenkins镜像进行持续集成
 - 使用docker中的mysql镜像作为数据存储
