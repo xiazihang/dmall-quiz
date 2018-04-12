@@ -32,13 +32,12 @@
 - Intellij-IDEA
 
 ## 如何开始
-- 认真阅读题目需求
-- 基于gradle搭建spring boot项目
-- 将`collection.json`导入postman中运行，此时测试全部失败
-- 在项目中完成`collection.json`中的API
-- 使用postman进行测试，测试成功
+- 使用[SPRING INITIALIZR](https://start.spring.io/)搭建基础Spring Boot项目
+- 将`collection.json`拷贝到Spring Boot项目的根目录下
+- 将项目提交到Github
 - 在jenkins中创建一个freestyle类型的job，设置trigger使得github仓库一提交代码就会build，对项目进行持续集成
-- 在jenkins中配置使用newman对`collection.json`中的API进行测试
+- 在jenkins中配置使用newman对项目中的API进行测试
+- 此时构建jenkins job失败，可以开始根据题目需求完成API
 
 ## 输出规范
 - 京西商城功能实现代码
