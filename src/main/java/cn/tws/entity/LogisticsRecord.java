@@ -12,8 +12,8 @@ public class LogisticsRecord {
 
     private Long id;
     private String deliveryMan;
-    private Date outboundTime;
-    private Date signedTime;
+    private String outboundTime;
+    private String signedTime;
 
     public static enum LogisticsStatus {
         readyToShip,
@@ -22,10 +22,6 @@ public class LogisticsRecord {
     }
     @Enumerated(EnumType.STRING)
     private LogisticsStatus logisticsStatus;
-
-    public void setLogisticsStatus(LogisticsStatus logisticsStatus) {
-        this.logisticsStatus = logisticsStatus;
-    }
 
     public Long getId() {
         return id;
@@ -39,6 +35,10 @@ public class LogisticsRecord {
         return logisticsStatus;
     }
 
+    public void setLogisticsStatus(LogisticsStatus logisticsStatus) {
+        this.logisticsStatus = logisticsStatus;
+    }
+
     public String getDeliveryMan() {
         return deliveryMan;
     }
@@ -47,19 +47,19 @@ public class LogisticsRecord {
         this.deliveryMan = deliveryMan;
     }
 
-    public Date getOutboundTime() {
+    public String getOutboundTime() {
         return outboundTime;
     }
 
-    public void setOutboundTime(Date outboundTime) {
+    public void setOutboundTime(String outboundTime) {
         this.outboundTime = outboundTime;
     }
 
-    public Date getSignedTime() {
+    public String getSignedTime() {
         return signedTime;
     }
 
-    public void setSignedTime(Date signedTime) {
+    public void setSignedTime(String signedTime) {
         this.signedTime = signedTime;
     }
 }
