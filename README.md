@@ -1,7 +1,9 @@
 # 京西商城
 
 ## 练习要求
-现有一京西商城线下零售店老板，由于业务业务增加，
+现有一京西商城线下零售店王老板，发现随着互联网的普及，越来越多的人喜欢在在线上购买物品，直接配送到家，足不出户就可以获取日常用品。
+反观自己的线下零售店，周内店里客人寥寥无几，为了顺应时代的潮流，提高业绩，于是想委托你帮他开发一款名为"京西商城"的在线网站。
+方便顾客的购买，为用户提供优质的服务，使得自己商城的业绩能够提升。
 
 #### 功能需求
 - 用户可以添加新的商品，可以分别通过商品的`名称`，`描述`进行模糊查询，可以对商品的`名称`，`描述`,`价格`做修改。
@@ -22,7 +24,7 @@
   
 #### 题目要求
 - 使用jenkins持续集成，基于docker中的jenkins镜像
-- 使用mysql作为数据存储，基于docker中的mysql尽享
+- 使用mysql作为数据存储，基于docker中的mysql镜像
 - 使用Postman对API进行测试
 - 使用newman对Postman中的API进行集成测试
 
@@ -32,12 +34,12 @@
 - Intellij-IDEA
 
 ## 如何开始
-- 使用[SPRING INITIALIZR](https://start.spring.io/)搭建基础Spring Boot项目
+- 使用[Spring Initializr](https://start.spring.io/)搭建基础Spring Boot项目
 - 将`collection.json`拷贝到Spring Boot项目的根目录下
 - 将项目提交到Github
 - 在jenkins中创建一个freestyle类型的job，设置trigger使得github仓库一提交代码就会build，对项目进行持续集成
 - 在jenkins中配置使用newman对项目中的API进行测试
-- 此时构建jenkins job失败，可以开始根据题目需求完成API
+- 此时构建jenkins job会失败，可以开始根据题目需求完成API
 
 ## 输出规范
 - 京西商城功能实现代码
