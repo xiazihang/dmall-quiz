@@ -20,7 +20,7 @@ services:
       - TERM=dumb
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=dmalldb
-      - MYSQL_PASSWORD=12345678
+      - MYSQL_PASSWORD=root
       - MYSQL_USER=dmalldb
     networks:
       main:
