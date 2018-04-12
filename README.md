@@ -1,7 +1,7 @@
 # 京西商城
 
 ## 练习要求
-我们现在做一个关于"京西商城"的综合练习，只需要按照题目要求实现所有的接口，确保测试通过，没有前端页面题目。需求如下：
+现有一京西商城线下零售店老板，由于业务业务增加，
 
 #### 功能需求
 - 用户可以添加新的商品，可以分别通过商品的`名称`，`描述`进行模糊查询，可以对商品的`名称`，`描述`,`价格`做修改。
@@ -19,23 +19,12 @@
 - 当货物到达，用户可以签收货物
   - 系统需要修改订单状态，以及物流订单状态并记录时间
 
-
-
-#### 实体及字段要求
-- 在京西商城中存在实体：商品(product)，库存信息(inventory)，货物(goods)，订单(order)，物流单(LogisticsRecord)
-- 商品(product)实体包含字段有：id, name, description, price
-- 库存信息(inventory)实体包含字段有：id, lockedCount, count
-- 购买货物(purchaseItem)实体包含字段：id, productName, productDescription, purchasePrice, purchaseCount
-- 订单(order)实体包含字段：id, totalPrice, status, createTime, finishTime, paidTime, withdrawnTime
-  - 支付状态(status)有：unPaid, paid, withDrawn, finished 
-- 物流单(LogisticsRecord)实体包含字段有：id, LogisticsStatus, OutboundTime, signedTime, deliveryMan
-  - 物流状态(LogisticsStatus)有：readyToShip, Shipping, Signed
   
 #### 题目要求
-- 使用docker中的jenkins镜像进行持续集成
-- 使用docker中的mysql镜像作为数据存储
-- 使用postman对API进行测试
-- 使用newman对postman中的API进行命令行集成测试
+- 使用jenkins持续集成，基于docker中的jenkins镜像
+- 使用mysql作为数据存储，基于docker中的mysql尽享
+- 使用Postman对API进行测试
+- 使用newman对Postman中的API进行集成测试
 
 
 ## 环境要求
