@@ -3,3 +3,5 @@ CREATE TABLE inventory(
   count int(10),
   lockedCount int(10)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
