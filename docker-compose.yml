@@ -25,7 +25,7 @@ services:
     networks:
       main:
         aliases:
-          - mysql
+          - dmalldb
 networks:
   main:
 
