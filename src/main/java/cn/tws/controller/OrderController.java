@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -19,9 +20,6 @@ public class OrderController {
     @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
-    private
-
     @PostMapping(value = "/orders")
     ResponseEntity createOrder(@RequestBody List<HashMap> orderInfoArray) throws Exception {
         Map result = new HashMap();
@@ -34,7 +32,12 @@ public class OrderController {
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
-    public void createInventory(String productId, String purchaseCount){
+    public void createInventory(String productId, String purchaseCount) {
+
+    }
+
+    @GetMapping(value = "/orders/1")
+    ResponseEntity getOrderInfo() throws Exception {
 
     }
 }
