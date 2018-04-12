@@ -1,20 +1,27 @@
 package cn.tws.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
+@Table(name = "logisticsRecord")
 public class LogisticsRecord {
     @Id
     @GeneratedValue
 
     private Long id;
-    private Enum logisticsStatus;
     private String deliveryMan;
-    private Date outboundTime;
-    private Date signedTime;
+    private String outboundTime;
+    private String signedTime;
+
+    public static enum LogisticsStatus {
+        readyToShip,
+        shipping,
+        signed
+    }
+    @Enumerated(EnumType.STRING)
+    private LogisticsStatus logisticsStatus;
 
     public Long getId() {
         return id;
@@ -28,7 +35,7 @@ public class LogisticsRecord {
         return logisticsStatus;
     }
 
-    public void setLogisticsStatus(Enum logisticsStatus) {
+    public void setLogisticsStatus(LogisticsStatus logisticsStatus) {
         this.logisticsStatus = logisticsStatus;
     }
 
@@ -40,19 +47,19 @@ public class LogisticsRecord {
         this.deliveryMan = deliveryMan;
     }
 
-    public Date getOutboundTime() {
+    public String getOutboundTime() {
         return outboundTime;
     }
 
-    public void setOutboundTime(Date outboundTime) {
+    public void setOutboundTime(String outboundTime) {
         this.outboundTime = outboundTime;
     }
 
-    public Date getSignedTime() {
+    public String getSignedTime() {
         return signedTime;
     }
 
-    public void setSignedTime(Date signedTime) {
+    public void setSignedTime(String signedTime) {
         this.signedTime = signedTime;
     }
 }
