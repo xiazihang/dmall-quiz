@@ -36,5 +36,4 @@ public class LogisticsRecordController {
         logisticsRecordRepository.save(oldLogisticsRecord);
         return new ResponseEntity<>(logisticsRecordRepository.findOne(id), HttpStatus.OK);
     }
-
 }
