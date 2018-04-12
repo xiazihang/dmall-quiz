@@ -21,7 +21,7 @@ public class Product {
 
     //加了外键的就是关系的维护方
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(unique = true)
+    @JoinColumn(unique = true, name = "inventoryId")
     private Inventory inventory;
 
     public Product() {
