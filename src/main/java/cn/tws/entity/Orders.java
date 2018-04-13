@@ -1,16 +1,22 @@
 package cn.tws.entity;
 
 import javax.persistence.*;
+
 import cn.tws.utils.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
 public class Orders {
+
     @Id
     @GeneratedValue
     private Long id;
     private int totalPrice;
+    private int userId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -19,17 +25,18 @@ public class Orders {
     private Timestamp paidTime;
     private Timestamp withdrawnTime;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderId")
+    private List<PurchaseItem> PurchaseItemList;
+
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(unique = true, name = "logisticsRecordId")
+    private LogisticsRecord logisticsRecord;
+
     public Orders() {
     }
 
-    public Orders(Integer totalPrice, OrderStatus status, Timestamp createTime, Timestamp finishTime, Timestamp paidTime, Timestamp withdrawnTime) {
-        this.totalPrice = totalPrice;
-        this.status = status;
-        this.createTime = createTime;
-        this.finishTime = finishTime;
-        this.paidTime = paidTime;
-        this.withdrawnTime = withdrawnTime;
-    }
 
     public Long getId() {
         return id;
@@ -39,13 +46,14 @@ public class Orders {
         this.id = id;
     }
 
-    public Integer getTotalPrice() {
+    public int getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(Integer totalPrice) {
+    public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
     }
+
 
     public OrderStatus getStatus() {
         return status;
@@ -85,5 +93,29 @@ public class Orders {
 
     public void setWithdrawnTime(Timestamp withdrawnTime) {
         this.withdrawnTime = withdrawnTime;
+    }
+
+    public List<PurchaseItem> getPurchaseItemList() {
+        return PurchaseItemList;
+    }
+
+    public void setPurchaseItemList(List<PurchaseItem> purchaseItemList) {
+        PurchaseItemList = purchaseItemList;
+    }
+
+    public LogisticsRecord getLogisticsRecord() {
+        return logisticsRecord;
+    }
+
+    public void setLogisticsRecord(LogisticsRecord logisticsRecord) {
+        this.logisticsRecord = logisticsRecord;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
