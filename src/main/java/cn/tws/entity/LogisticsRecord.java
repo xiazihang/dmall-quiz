@@ -1,5 +1,7 @@
 package cn.tws.entity;
 
+import cn.tws.utils.LogisticsStatus;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
@@ -15,11 +17,7 @@ public class LogisticsRecord {
     private String outboundTime;
     private String signedTime;
 
-    public static enum LogisticsStatus {
-        readyToShip,
-        shipping,
-        signed
-    }
+
     @Enumerated(EnumType.STRING)
     private LogisticsStatus logisticsStatus;
 
