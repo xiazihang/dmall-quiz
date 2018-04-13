@@ -2,7 +2,6 @@ package cn.tws.controller;
 
 import cn.tws.entity.Product;
 import cn.tws.repository.ProductRepository;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
