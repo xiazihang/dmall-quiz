@@ -2,13 +2,13 @@ package cn.tws.repository;
 
 import cn.tws.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Product save(Product product);
-    Product getById(Long id);
+    Optional<Product> findById(Long id);
     List<Product> findAll();
     List<Product> findByDescriptionContaining(String desc);
     List<Product> findByDescriptionContainingAndName(String desc,String name);

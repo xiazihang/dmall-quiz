@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/products")
@@ -27,10 +28,20 @@ public class ProductController {
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") String id) {
-        Product product = productRepository.getById(Long.valueOf(id));
-        return new ResponseEntity<>(product, HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateProduct(@RequestBody Product product, @PathVariable("id") String id) {
+        Long productId = Long.valueOf(id);
+        Optional<Product> productOptional = productRepository.findById(productId);
+
+        if(!productOptional.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+
+        product.setId(productId);
+
+        productRepository.save(product);
+
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "")
@@ -49,5 +60,12 @@ public class ProductController {
         }
 
         return new ResponseEntity<>(productRepository.findByDescriptionContainingAndName(description, name), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> getProductById(@PathVariable("id") String id) {
+        Optional<Product> product = productRepository.findById(Long.valueOf(id));
+
+        return product.<ResponseEntity<Object>>map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
