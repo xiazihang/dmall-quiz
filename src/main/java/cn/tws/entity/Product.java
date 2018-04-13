@@ -1,5 +1,9 @@
 package cn.tws.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -19,8 +23,8 @@ public class Product {
     @NotNull
     private int price;
 
-    //加了外键的就是关系的维护方
     @OneToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
     @JoinColumn(unique = true, name = "inventoryId")
     private Inventory inventory;
 
