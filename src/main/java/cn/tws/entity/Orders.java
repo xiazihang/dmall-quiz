@@ -10,7 +10,7 @@ public class Orders {
     @Id
     @GeneratedValue
     private Long id;
-    private Long totalPrice;
+    private int totalPrice;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -19,7 +19,10 @@ public class Orders {
     private Timestamp paidTime;
     private Timestamp withdrawnTime;
 
-    public Orders(Long totalPrice, OrderStatus status, Timestamp createTime, Timestamp finishTime, Timestamp paidTime, Timestamp withdrawnTime) {
+    public Orders() {
+    }
+
+    public Orders(Integer totalPrice, OrderStatus status, Timestamp createTime, Timestamp finishTime, Timestamp paidTime, Timestamp withdrawnTime) {
         this.totalPrice = totalPrice;
         this.status = status;
         this.createTime = createTime;
@@ -36,11 +39,11 @@ public class Orders {
         this.id = id;
     }
 
-    public Long getTotalPrice() {
+    public Integer getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(Long totalPrice) {
+    public void setTotalPrice(Integer totalPrice) {
         this.totalPrice = totalPrice;
     }
 
