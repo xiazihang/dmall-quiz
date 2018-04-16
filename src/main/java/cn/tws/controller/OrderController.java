@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,26 +41,29 @@ public class OrderController {
     @PostMapping(value = "")
     public ResponseEntity createOrder(@RequestBody List<HashMap> orderInfoArray) throws Exception {
         Orders orders = new Orders();
-        List<PurchaseItem> purchaseItemList = orderInfoArray.stream().map(orderInfo -> {
+        orderRepository.save(orders);
+        List<PurchaseItem> purchaseItemList = new ArrayList<>();
+        for (HashMap orderInfo : orderInfoArray) {
+
             Integer productId = (Integer) orderInfo.get("productId");
             Integer purchaseCount = (Integer) orderInfo.get("purchaseCount");
 
             Product product = productRepository.findOne(Long.valueOf(productId));
             if (product == null) {
-                // return new ResponseEntity<>("该订单中包含不存在的商品ID", HttpStatus.NOT_FOUND);
+                 return new ResponseEntity<>("该订单中包含不存在的商品ID", HttpStatus.NOT_FOUND);
             }
 
             Inventory inventory = inventoryRepository.findByProductId(Long.valueOf(productId));
             if (purchaseCount > inventory.getLockedCount()) {
-                // return new ResponseEntity<>("该订单中存在商品数量大于库存数量", HttpStatus.NOT_FOUND);
+                 return new ResponseEntity<>("该订单中存在商品数量大于库存数量", HttpStatus.NOT_FOUND);
             } else {
                 inventory.setLockedCount(inventory.getLockedCount() - purchaseCount);
                 inventoryRepository.save(inventory);
             }
+            purchaseItemList.add(createPurchaseItem(productId, purchaseCount, orders.getId()));
 
-            return createPurchaseItem(productId, purchaseCount, orders);
-        }).collect(Collectors.toList());
-
+        }
+        
         int totalPrice = getTotalPrice(purchaseItemList);
 
         orders.setTotalPrice(totalPrice);
@@ -70,9 +74,9 @@ public class OrderController {
         return new ResponseEntity<>(orders, HttpStatus.CREATED);
     }
 
-    public PurchaseItem createPurchaseItem(Integer productId, Integer purchaseCount, Orders orders) {
+    public PurchaseItem createPurchaseItem(Integer productId, Integer purchaseCount, Long orderId) {
         Product product = productRepository.findOne(Long.valueOf(productId));
-        return purchaseItemRepository.save(new PurchaseItem(product.getId(), orders.getId(), product.getName(), product.getDescription(), product.getPrice(), purchaseCount));
+        return purchaseItemRepository.save(new PurchaseItem(product.getId(), orderId, product.getName(), product.getDescription(), product.getPrice(), purchaseCount));
     }
 
     public int getTotalPrice(List<PurchaseItem> purchaseItemList) {
@@ -82,6 +86,9 @@ public class OrderController {
     @PutMapping(value = "/{id}")
     public ResponseEntity payOrder(@PathVariable Long id) throws Exception {
         Orders oldOrder = orderRepository.findOne(id);
+        if(oldOrder == null){
+            return new ResponseEntity<>("该订单不存在", HttpStatus.OK);
+        }
         if (oldOrder.getStatus() == OrderStatus.paid) {
             return new ResponseEntity<>("您已支付成功，请勿重新支付", HttpStatus.OK);
         }
@@ -91,6 +98,7 @@ public class OrderController {
         if (oldOrder.getStatus() == OrderStatus.finished) {
             return new ResponseEntity<>("该订单已完成，不可再进行支付", HttpStatus.OK);
         }
+
         oldOrder.setStatus(OrderStatus.paid);
         oldOrder.setPaidTime(new Timestamp(System.currentTimeMillis()));
 
@@ -108,6 +116,9 @@ public class OrderController {
     @PutMapping(value = "/withDrawn/{id}")
     public ResponseEntity withDrawnOrder(@PathVariable Long id) throws Exception {
         Orders order = orderRepository.findOne(id);
+        if(order == null){
+            return new ResponseEntity<>("该订单不存在", HttpStatus.OK);
+        }
         if (order.getStatus() == OrderStatus.paid) {
             return new ResponseEntity<>("该订单已被支付，不可撤销", HttpStatus.OK);
         }
@@ -120,11 +131,14 @@ public class OrderController {
         order.setStatus(OrderStatus.withdrawn);
         order.setWithdrawnTime(new Timestamp(System.currentTimeMillis()));
 
-        PurchaseItem purchaseItem = purchaseItemRepository.findByOrderId(id);
-        Inventory inventory = inventoryRepository.findByProductId(purchaseItem.getProductId());
-        inventory.setLockedCount(inventory.getLockedCount() + purchaseItem.getPurchaseCount());
+        List<PurchaseItem> purchaseItems = purchaseItemRepository.findByOrderId(id);
+        for (PurchaseItem purchaseItem:purchaseItems){
+            Inventory inventory = inventoryRepository.findByProductId(purchaseItem.getProductId());
+            inventory.setLockedCount(inventory.getLockedCount() + purchaseItem.getPurchaseCount());
 
-        orderRepository.save(order);
+            orderRepository.save(order);
+        }
+
         return new ResponseEntity<>(orderRepository.findOne(id), HttpStatus.OK);
     }
 

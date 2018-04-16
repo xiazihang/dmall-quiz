@@ -2,8 +2,10 @@ package cn.tws.controller;
 
 import cn.tws.entity.LogisticsRecord;
 import cn.tws.entity.Orders;
+import cn.tws.repository.InventoryRepository;
 import cn.tws.repository.LogisticsRecordRepository;
 import cn.tws.repository.OrderRepository;
+import cn.tws.repository.ProductRepository;
 import cn.tws.utils.LogisticsStatus;
 import cn.tws.utils.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,13 @@ public class LogisticsRecordController {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private InventoryRepository inventoryRepository;
+
 
     @GetMapping(value = "/{id}")
     public ResponseEntity getRecordRepository(@PathVariable Long id) throws Exception {
@@ -54,6 +63,12 @@ public class LogisticsRecordController {
         logisticsRecordRepository.save(oldLogisticsRecord);
 
         Orders oldOrder = orderRepository.findByLogisticsRecordId(id);
+        if(oldOrder == null){
+            return new ResponseEntity<>(" 该物流单没有相应的订单", HttpStatus.OK);
+        }
+
+        //真实数量减少
+
         oldOrder.setStatus(OrderStatus.finished);
         oldOrder.setFinishTime(new Timestamp(System.currentTimeMillis()));
         orderRepository.save(oldOrder);

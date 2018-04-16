@@ -4,6 +4,8 @@ import cn.tws.entity.PurchaseItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface PurchaseItemRepository extends JpaRepository<PurchaseItem, Long> {
-   PurchaseItem findByOrderId(Long id);
+   List<PurchaseItem> findByOrderId(Long id);
 }
