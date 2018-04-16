@@ -33,6 +33,13 @@ public class OrderController {
     @Autowired
     private LogisticsRecordRepository logisticsRecordRepository;
 
+    public OrderController() {
+    }
+
+    public OrderController(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
     @PostMapping(value = "")
     public ResponseEntity createOrder(@RequestBody List<HashMap> orderInfoArray) throws Exception {
         Order order = new Order();
@@ -100,7 +107,7 @@ public class OrderController {
         return ResponseEntity.badRequest().build();
     }
 
-    private ResponseEntity finishOrder(Order order) {
+    public ResponseEntity finishOrder(Order order) {
         if(order.getStatus() != OrderStatus.paid){
             return ResponseEntity.badRequest().build();
         }
