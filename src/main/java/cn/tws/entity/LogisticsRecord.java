@@ -3,6 +3,7 @@ package cn.tws.entity;
 import cn.tws.utils.LogisticsStatus;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 
@@ -14,9 +15,8 @@ public class LogisticsRecord {
 
     private Long id;
     private String deliveryMan;
-    private String outboundTime;
-    private String signedTime;
-
+    private Timestamp outboundTime;
+    private Timestamp signedTime;
 
     @Enumerated(EnumType.STRING)
     private LogisticsStatus logisticsStatus;
@@ -45,19 +45,19 @@ public class LogisticsRecord {
         this.deliveryMan = deliveryMan;
     }
 
-    public String getOutboundTime() {
+    public Timestamp getOutboundTime() {
         return outboundTime;
     }
 
-    public void setOutboundTime(String outboundTime) {
+    public void setOutboundTime(Timestamp outboundTime) {
         this.outboundTime = outboundTime;
     }
 
-    public String getSignedTime() {
+    public Timestamp getSignedTime() {
         return signedTime;
     }
 
-    public void setSignedTime(String signedTime) {
+    public void setSignedTime(Timestamp signedTime) {
         this.signedTime = signedTime;
     }
 }

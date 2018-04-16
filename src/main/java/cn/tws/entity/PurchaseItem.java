@@ -9,33 +9,22 @@ public class PurchaseItem {
     @GeneratedValue
     private Long id;
     private Long productId;
+    private Long orderId;
     private String productName;
     private String productDescription;
     private int purchasePrice;
     private int purchaseCount;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "orderId")
-    private Orders orders;
-
-    public PurchaseItem() {
+    public PurchaseItem(){
     }
 
-    public PurchaseItem(Long productId, String productName, String productDescription, int purchasePrice, int purchaseCount, Orders orders) {
+    public PurchaseItem(Long productId, Long orderId, String productName, String productDescription, int purchasePrice, int purchaseCount) {
         this.productId = productId;
+        this.orderId = orderId;
         this.productName = productName;
         this.productDescription = productDescription;
         this.purchasePrice = purchasePrice;
         this.purchaseCount = purchaseCount;
-        this.orders = orders;
-    }
-
-    public Orders getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Orders orders) {
-        this.orders = orders;
     }
 
     public Long getId() {
@@ -84,5 +73,14 @@ public class PurchaseItem {
 
     public void setPurchaseCount(int purchaseCount) {
         this.purchaseCount = purchaseCount;
+    }
+
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 }
