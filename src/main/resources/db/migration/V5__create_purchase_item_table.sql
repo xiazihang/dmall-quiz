@@ -6,6 +6,6 @@ CREATE TABLE purchaseItem(
   purchasePrice int(10),
   orderId int(10),
   productId int(10),
-  FOREIGN KEY (orderId) REFERENCES orders(id),
+  FOREIGN KEY (orderId) REFERENCES `order`(id),
   FOREIGN KEY (productId) REFERENCES product(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

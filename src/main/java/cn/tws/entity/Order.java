@@ -3,14 +3,13 @@ package cn.tws.entity;
 import javax.persistence.*;
 
 import cn.tws.utils.OrderStatus;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
-public class Orders {
+@Table(name = "\"order\"")
+public class Order {
 
     @Id
     @GeneratedValue
@@ -34,7 +33,7 @@ public class Orders {
     @JoinColumn(unique = true, name = "logisticsRecordId")
     private LogisticsRecord logisticsRecord;
 
-    public Orders() {
+    public Order() {
     }
 
 

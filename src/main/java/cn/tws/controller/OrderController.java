@@ -9,20 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.sql.Date;
+import java.net.URI;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
-@Controller
-@RequestMapping("/api/orders")
+@RestController
+@RequestMapping("/orders")
 public class OrderController {
-
     @Autowired
     private OrderRepository orderRepository;
 
@@ -40,38 +35,36 @@ public class OrderController {
 
     @PostMapping(value = "")
     public ResponseEntity createOrder(@RequestBody List<HashMap> orderInfoArray) throws Exception {
-        Orders orders = new Orders();
-        orderRepository.save(orders);
+        Order order = new Order();
+        orderRepository.save(order);
         List<PurchaseItem> purchaseItemList = new ArrayList<>();
-        for (HashMap orderInfo : orderInfoArray) {
 
+        for (HashMap orderInfo : orderInfoArray) {
             Integer productId = (Integer) orderInfo.get("productId");
             Integer purchaseCount = (Integer) orderInfo.get("purchaseCount");
 
-            Product product = productRepository.findOne(Long.valueOf(productId));
-            if (product == null) {
-                 return new ResponseEntity<>("该订单中包含不存在的商品ID", HttpStatus.NOT_FOUND);
+            Optional<Product> productOptional = productRepository.findById(Long.valueOf(productId));
+            Inventory inventory = productOptional.get().getInventory();
+
+            if (!productOptional.isPresent() || inventory.getLockedCount() < purchaseCount) {
+                 return ResponseEntity.notFound().build();
             }
 
-            Inventory inventory = inventoryRepository.findByProductId(Long.valueOf(productId));
-            if (purchaseCount > inventory.getLockedCount()) {
-                 return new ResponseEntity<>("该订单中存在商品数量大于库存数量", HttpStatus.NOT_FOUND);
-            } else {
-                inventory.setLockedCount(inventory.getLockedCount() - purchaseCount);
-                inventoryRepository.save(inventory);
-            }
-            purchaseItemList.add(createPurchaseItem(productId, purchaseCount, orders.getId()));
-
+            inventory.setLockedCount(inventory.getLockedCount() - purchaseCount);
+            inventoryRepository.save(inventory);
+            purchaseItemList.add(createPurchaseItem(productId, purchaseCount, order.getId()));
         }
 
         int totalPrice = getTotalPrice(purchaseItemList);
 
-        orders.setTotalPrice(totalPrice);
-        orders.setUserId(1);
-        orders.setStatus(OrderStatus.unPaid);
-        orders.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        orderRepository.save(orders);
-        return new ResponseEntity<>(orders, HttpStatus.CREATED);
+        order.setTotalPrice(totalPrice);
+        order.setUserId(1); //TODO 默认添加用户id为1
+        order.setStatus(OrderStatus.unPaid); //TODO 大写
+        order.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        orderRepository.save(order);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(order.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
     public PurchaseItem createPurchaseItem(Integer productId, Integer purchaseCount, Long orderId) {
@@ -84,75 +77,84 @@ public class OrderController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity payOrder(@PathVariable Long id) throws Exception {
-        Orders oldOrder = orderRepository.findOne(id);
-        if(oldOrder == null){
-            return new ResponseEntity<>("该订单不存在", HttpStatus.OK);
-        }
-        if (oldOrder.getStatus() == OrderStatus.paid) {
-            return new ResponseEntity<>("您已支付成功，请勿重新支付", HttpStatus.OK);
-        }
-        if (oldOrder.getStatus() == OrderStatus.withdrawn) {
-            return new ResponseEntity<>("您已经撤销了该订单，如有需要请重新发起一个订单", HttpStatus.OK);
-        }
-        if (oldOrder.getStatus() == OrderStatus.finished) {
-            return new ResponseEntity<>("该订单已完成，不可再进行支付", HttpStatus.OK);
+    public ResponseEntity updateOrderStatus(@PathVariable Long id, @RequestParam OrderStatus orderStatus) throws Exception {
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (!orderOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
         }
 
-        oldOrder.setStatus(OrderStatus.paid);
-        oldOrder.setPaidTime(new Timestamp(System.currentTimeMillis()));
+        Order order = orderOptional.get();
 
-        LogisticsRecord logisticsRecord = new LogisticsRecord();
-        logisticsRecord.setLogisticsStatus(LogisticsStatus.readyToShip);
-        logisticsRecord.setDeliveryMan("李师傅");
-        logisticsRecordRepository.save(logisticsRecord);
+        if (orderStatus == OrderStatus.paid) {
+            return payForOrder(order);
+        }
 
-        oldOrder.setLogisticsRecord(logisticsRecord);
-        orderRepository.save(oldOrder);
+        if (orderStatus == OrderStatus.withdrawn) {
+            return withdrawOrder(order);
+        }
 
-        return new ResponseEntity<>(orderRepository.findOne(id), HttpStatus.OK);
+        if (orderStatus == OrderStatus.finished) {
+            return finishOrder(order);
+        }
+
+        return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/withDrawn/{id}")
-    public ResponseEntity withDrawnOrder(@PathVariable Long id) throws Exception {
-        Orders order = orderRepository.findOne(id);
-        if(order == null){
-            return new ResponseEntity<>("该订单不存在", HttpStatus.OK);
+    private ResponseEntity finishOrder(Order order) {
+        if(order.getStatus() != OrderStatus.paid){
+            return ResponseEntity.badRequest().build();
         }
-        if (order.getStatus() == OrderStatus.paid) {
-            return new ResponseEntity<>("该订单已被支付，不可撤销", HttpStatus.OK);
+
+        order.setStatus(OrderStatus.finished);
+        order.setFinishTime(new Timestamp(System.currentTimeMillis()));
+        orderRepository.save(order);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    private ResponseEntity withdrawOrder(Order order) {
+        if(order.getStatus() != OrderStatus.unPaid){
+            return ResponseEntity.badRequest().build();
         }
-        if (order.getStatus() == OrderStatus.withdrawn) {
-            return new ResponseEntity<>("该订单已被撤销，不可重复撤销", HttpStatus.OK);
-        }
-        if (order.getStatus() == OrderStatus.finished) {
-            return new ResponseEntity<>("该订单已完成，不可撤销", HttpStatus.OK);
-        }
+
         order.setStatus(OrderStatus.withdrawn);
         order.setWithdrawnTime(new Timestamp(System.currentTimeMillis()));
 
-        List<PurchaseItem> purchaseItems = purchaseItemRepository.findByOrderId(id);
+        List<PurchaseItem> purchaseItems = purchaseItemRepository.findByOrderId(order.getId());
         for (PurchaseItem purchaseItem:purchaseItems){
-            Inventory inventory = inventoryRepository.findByProductId(purchaseItem.getProductId());
+            Inventory inventory = productRepository.findById(purchaseItem.getProductId()).get().getInventory();
             inventory.setLockedCount(inventory.getLockedCount() + purchaseItem.getPurchaseCount());
 
-            orderRepository.save(order);
+            inventoryRepository.save(inventory);
         }
 
-        return new ResponseEntity<>(orderRepository.findOne(id), HttpStatus.OK);
+        orderRepository.save(order);
+        return ResponseEntity.noContent().build();
     }
 
+    private ResponseEntity payForOrder(Order order) {
+        if(order.getStatus() != OrderStatus.unPaid){
+            return ResponseEntity.badRequest().build();
+        }
 
-    @GetMapping(value = "/user/{id}")
-    public ResponseEntity findOrdersByUserId(@PathVariable Integer id) throws Exception {
-        List<Orders> orders = orderRepository.findAllByUserId(id);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        order.setStatus(OrderStatus.paid);
+        order.setPaidTime(new Timestamp(System.currentTimeMillis()));
+        LogisticsRecord logisticsRecord = new LogisticsRecordController(logisticsRecordRepository).createLogisticsRecord();
+        order.setLogisticsRecord(logisticsRecord);
+        orderRepository.save(order);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "")
+    public ResponseEntity findOrdersByUserId(@RequestParam(name = "userId") int userId) throws Exception {
+        List<Order> orders = orderRepository.findAllByUserId(userId);
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity findAllInfoByOrderId(@PathVariable Long id) throws Exception {
-        Orders orders = orderRepository.findOne(id);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        return orderOptional.<ResponseEntity>map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 }

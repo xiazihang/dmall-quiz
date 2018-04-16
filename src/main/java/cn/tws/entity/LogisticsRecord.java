@@ -12,7 +12,6 @@ import java.util.Date;
 public class LogisticsRecord {
     @Id
     @GeneratedValue
-
     private Long id;
     private String deliveryMan;
     private Timestamp outboundTime;

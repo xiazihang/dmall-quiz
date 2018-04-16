@@ -1,4 +1,4 @@
-CREATE TABLE orders(
+CREATE TABLE `order` (
   id int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   userId int(10),
   totalPrice int(10),
