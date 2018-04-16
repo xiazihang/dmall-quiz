@@ -1,6 +1,6 @@
 package cn.tws.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 public class Product {
     @Id
     @GeneratedValue
-    private Long id;
+    private java.lang.Long id;
 
     @NotNull
     private String name;
@@ -21,8 +21,8 @@ public class Product {
     @NotNull
     private int price;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JsonBackReference
+    @OneToOne(cascade = {CascadeType.DETACH,CascadeType.PERSIST,CascadeType.REMOVE})
+    @JsonIgnoreProperties("product")
     @JoinColumn(unique = true, name = "inventoryId")
     private Inventory inventory;
 

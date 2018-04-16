@@ -1,5 +1,7 @@
 package cn.tws.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -16,9 +18,17 @@ public class Inventory {
     @NotNull
     private int lockedCount;
 
-    @OneToOne(mappedBy = "inventory")  //一旦加了mappedBy就是关系的被维护方
-    @JoinColumn(name = "inventoryId")
+    @OneToOne(mappedBy = "inventory")
+    @JsonIgnoreProperties("inventory")
     private Product product;
+
+    public Inventory(int count, int lockedCount) {
+        this.count = count;
+        this.lockedCount = lockedCount;
+    }
+
+    public Inventory() {
+    }
 
     public Long getId() {
         return id;

@@ -1,15 +1,16 @@
 package cn.tws.controller;
 
+import cn.tws.entity.Inventory;
 import cn.tws.entity.Product;
 import cn.tws.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.HashMap;
+import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,25 +20,30 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @PostMapping(value = "")
-    public ResponseEntity<Map<String, String>> createProduct(@RequestBody Product product) {
+    public ResponseEntity<?> createProduct(@RequestBody Product product) {
+        Inventory inventory = new Inventory(0,0);
+
+        product.setInventory(inventory);
+
         Product createdProduct = productRepository.save(product);
 
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("uri", "/products/" + String.valueOf(createdProduct.getId()));
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdProduct.getId()).toUri();
 
-        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateProduct(@RequestBody Product product, @PathVariable("id") String id) {
-        Long productId = Long.valueOf(id);
-        Optional<Product> productOptional = productRepository.findById(productId);
+    public ResponseEntity<Object> updateProduct(@RequestBody Product input, @PathVariable("id") Long id) {
+        Optional<Product> productOptional = productRepository.findById(id);
 
         if(!productOptional.isPresent()){
             return ResponseEntity.notFound().build();
         }
 
-        product.setId(productId);
+        Product product = productOptional.get();
+        product.setDescription(input.getDescription());
+        product.setName(input.getName());
+        product.setPrice(input.getPrice());
 
         productRepository.save(product);
 
