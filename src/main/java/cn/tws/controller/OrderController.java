@@ -63,7 +63,7 @@ public class OrderController {
             purchaseItemList.add(createPurchaseItem(productId, purchaseCount, orders.getId()));
 
         }
-        
+
         int totalPrice = getTotalPrice(purchaseItemList);
 
         orders.setTotalPrice(totalPrice);

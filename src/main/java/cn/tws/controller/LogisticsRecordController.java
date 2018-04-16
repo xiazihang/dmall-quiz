@@ -1,7 +1,9 @@
 package cn.tws.controller;
 
+import cn.tws.entity.Inventory;
 import cn.tws.entity.LogisticsRecord;
 import cn.tws.entity.Orders;
+import cn.tws.entity.PurchaseItem;
 import cn.tws.repository.InventoryRepository;
 import cn.tws.repository.LogisticsRecordRepository;
 import cn.tws.repository.OrderRepository;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/logisticsRecord")
@@ -24,9 +27,6 @@ public class LogisticsRecordController {
 
     @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
 
     @Autowired
     private InventoryRepository inventoryRepository;
@@ -41,11 +41,13 @@ public class LogisticsRecordController {
     @PutMapping(value = "/{id}")
     public ResponseEntity shipping(@PathVariable Long id) throws Exception {
         LogisticsRecord oldLogisticsRecord = logisticsRecordRepository.findOne(id);
-
-        if(oldLogisticsRecord.getLogisticsStatus() == LogisticsStatus.shipping){
+        if(oldLogisticsRecord == null){
+            return new ResponseEntity<>("没有该物流订单", HttpStatus.OK);
+        }
+        if (oldLogisticsRecord.getLogisticsStatus() == LogisticsStatus.shipping) {
             return new ResponseEntity<>("该订单已发货", HttpStatus.OK);
         }
-        if(oldLogisticsRecord.getLogisticsStatus() == LogisticsStatus.signed){
+        if (oldLogisticsRecord.getLogisticsStatus() == LogisticsStatus.signed) {
             return new ResponseEntity<>("该订单已签收", HttpStatus.OK);
         }
         oldLogisticsRecord.setOutboundTime(new Timestamp(System.currentTimeMillis()));
@@ -57,17 +59,28 @@ public class LogisticsRecordController {
     @PutMapping(value = "/sign/{id}")
     public ResponseEntity sign(@PathVariable Long id) throws Exception {
         LogisticsRecord oldLogisticsRecord = logisticsRecordRepository.findOne(id);
+        if(oldLogisticsRecord == null){
+            return new ResponseEntity<>("没有该物流订单", HttpStatus.OK);
+        }
+        if(oldLogisticsRecord.getLogisticsStatus() == LogisticsStatus.signed){
+            return new ResponseEntity<>("该订单已签收", HttpStatus.OK);
+        }
 
         oldLogisticsRecord.setSignedTime(new Timestamp(System.currentTimeMillis()));
         oldLogisticsRecord.setLogisticsStatus(LogisticsStatus.signed);
         logisticsRecordRepository.save(oldLogisticsRecord);
 
         Orders oldOrder = orderRepository.findByLogisticsRecordId(id);
-        if(oldOrder == null){
+        if (oldOrder == null) {
             return new ResponseEntity<>(" 该物流单没有相应的订单", HttpStatus.OK);
         }
 
-        //真实数量减少
+        List<PurchaseItem> purchaseItems = oldOrder.getPurchaseItemList();
+        for (PurchaseItem purchaseItem : purchaseItems) {
+            Inventory inventory = inventoryRepository.findByProductId(purchaseItem.getProductId());
+            inventory.setCount(inventory.getCount() - purchaseItem.getPurchaseCount());
+            inventoryRepository.save(inventory);
+        }
 
         oldOrder.setStatus(OrderStatus.finished);
         oldOrder.setFinishTime(new Timestamp(System.currentTimeMillis()));
