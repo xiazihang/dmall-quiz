@@ -30,9 +30,8 @@ public class LogisticsRecordController {
     @Autowired
     private InventoryRepository inventoryRepository;
 
-    public LogisticsRecordController(LogisticsRecordRepository logisticsRecordRepository) {
-        this.logisticsRecordRepository = logisticsRecordRepository;
-    }
+    @Autowired
+    private OrderController orderController;
 
     public LogisticsRecordController() {
     }
@@ -81,7 +80,7 @@ public class LogisticsRecordController {
         logisticsRecord.setLogisticsStatus(LogisticsStatus.signed);
         logisticsRecord.setSignedTime(new Timestamp(System.currentTimeMillis()));
         logisticsRecordRepository.save(logisticsRecord);
-        new OrderController(orderRepository).finishOrder(orderRepository.findById(orderId).get());
+        orderController.finishOrder(orderRepository.findById(orderId).get());
 
         return ResponseEntity.noContent().build();
     }
