@@ -1,11 +1,10 @@
 package cn.tws.entity;
 
 import cn.tws.utils.LogisticsStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Date;
 
 @Entity
 @Table(name = "logisticsRecord")
@@ -14,7 +13,11 @@ public class LogisticsRecord {
     @GeneratedValue
     private Long id;
     private String deliveryMan;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Timestamp outboundTime;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Timestamp signedTime;
 
     @Enumerated(EnumType.STRING)
