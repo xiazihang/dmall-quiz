@@ -33,11 +33,10 @@ public class OrderController {
     @Autowired
     private LogisticsRecordRepository logisticsRecordRepository;
 
-    public OrderController() {
-    }
+    @Autowired
+    private LogisticsRecordController logisticsRecordController;
 
-    public OrderController(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    public OrderController() {
     }
 
     @PostMapping(value = "")
@@ -146,7 +145,7 @@ public class OrderController {
 
         order.setStatus(OrderStatus.paid);
         order.setPaidTime(new Timestamp(System.currentTimeMillis()));
-        LogisticsRecord logisticsRecord = new LogisticsRecordController(logisticsRecordRepository).createLogisticsRecord();
+        LogisticsRecord logisticsRecord = logisticsRecordController.createLogisticsRecord();
         order.setLogisticsRecord(logisticsRecord);
         orderRepository.save(order);
 
