@@ -53,6 +53,7 @@ Note：
 - 以上角色的登陆和权限验证等安全机制，不在本题要求内
 - 货物信息即商品的快照，该信息生成后不允许修改，用于记录订单创建时该商品的信息
 - 不考虑退换货
+- 使用`newman run collection.json -e dmallQuiz.json`命令运行测试
 
 ### 题目要求
 - 使用Jenkins持续集成，基于Docker中的Jenkins镜像
@@ -67,7 +68,8 @@ Note：
 
 ## 如何开始
 - 使用[Spring Initializr](https://start.spring.io/)搭建基础Spring Boot项目
-- 将`collection.json`拷贝到Spring Boot项目的根目录下
+- 将`collection.json`和`damllQuiz.json`拷贝到Spring Boot项目的根目录下
+- 修改`dmallQuiz.json`中的IP地址为自己本机公网IP
 - 将项目提交到Github
 - 在Jenkins中创建一个Freestyle类型的job，设置trigger使得Github仓库一提交代码就会build，对项目进行持续集成
 - 在Jenkins中配置使用Newman对项目中的API进行测试

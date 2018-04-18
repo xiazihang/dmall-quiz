@@ -28,7 +28,7 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}:{{port}}/products",
+						"url": "http://{{IP}}:{{port}}/products",
 						"method": "POST",
 						"header": [
 							{
@@ -41,7 +41,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"name\": \"test1\",\n\t\"description\": \"test\",\n\t\"price\": 20\n}"
 						},
-						"description": "### API功能：\n- 创建新的商品信息：\n- 同时需要创建对应商品的库存信息\n\n### 输入：\n```\n{\n\t\"name\": \"test1\",\n\t\"description\": \"test\",\n\t\"price\": 20\n}\n```\n### 输出：\n\n- response中的Headers中应该包含对应商品的可访问路径：`location:http://localhost:8083/products/10`\n- status状态码为201"
+						"description": "### API功能：\n- 创建新的商品信息：\n- 同时需要创建对应商品的库存信息\n\n### 输入：\n```\n{\n\t\"name\": \"test1\",\n\t\"description\": \"test\",\n\t\"price\": 20\n}\n```\n### 输出：\n\n- response中的Headers中应该包含对应商品的可访问路径：`location:http://IP:8083/products/10`\n- status状态码为201"
 					},
 					"response": []
 				},
@@ -59,7 +59,7 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}:{{port}}/products/1",
+						"url": "http://{{IP}}:{{port}}/products/1",
 						"method": "PUT",
 						"header": [
 							{
@@ -107,7 +107,7 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}:{{port}}/products/1",
+						"url": "http://{{IP}}:{{port}}/products/1",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -142,7 +142,7 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}:{{port}}/products",
+						"url": "http://{{IP}}:{{port}}/products",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -178,10 +178,10 @@
 					],
 					"request": {
 						"url": {
-							"raw": "http://{{host}}:{{port}}/products?name=方便面",
+							"raw": "http://{{IP}}:{{port}}/products?name=方便面",
 							"protocol": "http",
-							"host": [
-								"{{host}}"
+							"IP": [
+								"{{IP}}"
 							],
 							"port": "{{port}}",
 							"path": [
@@ -232,10 +232,10 @@
 					],
 					"request": {
 						"url": {
-							"raw": "http://{{host}}:{{port}}/products?name=方便面&description=师",
+							"raw": "http://{{IP}}:{{port}}/products?name=方便面&description=师",
 							"protocol": "http",
-							"host": [
-								"{{host}}"
+							"IP": [
+								"{{IP}}"
 							],
 							"port": "{{port}}",
 							"path": [
@@ -285,7 +285,7 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}:{{port}}/orders",
+						"url": "http://{{IP}}:{{port}}/orders",
 						"method": "POST",
 						"header": [
 							{
@@ -317,10 +317,10 @@
 					],
 					"request": {
 						"url": {
-							"raw": "http://{{host}}:{{port}}/orders/1?orderStatus=paid",
+							"raw": "http://{{IP}}:{{port}}/orders/1?orderStatus=paid",
 							"protocol": "http",
-							"host": [
-								"{{host}}"
+							"IP": [
+								"{{IP}}"
 							],
 							"port": "{{port}}",
 							"path": [
@@ -362,10 +362,10 @@
 					],
 					"request": {
 						"url": {
-							"raw": "http://{{host}}:{{port}}/orders/5?orderStatus=withdrawn",
+							"raw": "http://{{IP}}:{{port}}/orders/5?orderStatus=withdrawn",
 							"protocol": "http",
-							"host": [
-								"{{host}}"
+							"IP": [
+								"{{IP}}"
 							],
 							"port": "{{port}}",
 							"path": [
@@ -424,7 +424,7 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}:{{port}}/orders/1",
+						"url": "http://{{IP}}:{{port}}/orders/1",
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -462,10 +462,10 @@
 					],
 					"request": {
 						"url": {
-							"raw": "http://{{host}}:{{port}}/orders?userId=1",
+							"raw": "http://{{IP}}:{{port}}/orders?userId=1",
 							"protocol": "http",
-							"host": [
-								"{{host}}"
+							"IP": [
+								"{{IP}}"
 							],
 							"port": "{{port}}",
 							"path": [
@@ -529,7 +529,7 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}:{{port}}/logisticsRecords/1",
+						"url": "http://{{IP}}:{{port}}/logisticsRecords/1",
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -555,10 +555,10 @@
 					],
 					"request": {
 						"url": {
-							"raw": "http://{{host}}:{{port}}/logisticsRecords/1/orders/1?logisticsStatus=shipping",
+							"raw": "http://{{IP}}:{{port}}/logisticsRecords/1/orders/1?logisticsStatus=shipping",
 							"protocol": "http",
-							"host": [
-								"{{host}}"
+							"IP": [
+								"{{IP}}"
 							],
 							"port": "{{port}}",
 							"path": [
@@ -602,10 +602,10 @@
 					],
 					"request": {
 						"url": {
-							"raw": "http://{{host}}:{{port}}/logisticsRecords/1/orders/1?logisticsStatus=signed",
+							"raw": "http://{{IP}}:{{port}}/logisticsRecords/1/orders/1?logisticsStatus=signed",
 							"protocol": "http",
-							"host": [
-								"{{host}}"
+							"IP": [
+								"{{IP}}"
 							],
 							"port": "{{port}}",
 							"path": [
@@ -654,7 +654,7 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}:{{port}}/inventories/1",
+						"url": "http://{{IP}}:{{port}}/inventories/1",
 						"method": "PUT",
 						"header": [
 							{

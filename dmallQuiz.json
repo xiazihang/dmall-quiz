@@ -4,7 +4,7 @@
   "values": [
     {
       "enabled": true,
-      "key": "host",
+      "key": "IP",
       "value": "10.205.20.80",
       "type": "text"
     },
