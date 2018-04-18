@@ -110,6 +110,21 @@ public class OrderController {
 
         order.setStatus(OrderStatus.finished);
         order.setFinishTime(new Timestamp(System.currentTimeMillis()));
+
+        for(PurchaseItem purchaseItem :order.getPurchaseItemList()){
+            Long productId = purchaseItem.getProductId();
+            int purchaseCount = purchaseItem.getPurchaseCount();
+            
+            Optional<Product> productOptional = productRepository.findById(productId);
+            if(!productOptional.isPresent()){
+                return ResponseEntity.badRequest().build();
+            }
+
+            Inventory inventory = productOptional.get().getInventory();
+            inventory.setCount(inventory.getCount() - purchaseCount);
+            inventoryRepository.save(inventory);
+        }
+
         orderRepository.save(order);
 
         return ResponseEntity.noContent().build();
