@@ -54,7 +54,7 @@ Note：
 - 货物信息即商品的快照，该信息生成后不允许修改，用于记录订单创建时该商品的信息
 - 不考虑退换货
 - 使用`newman run collection.json -e dmallQuiz.json`命令运行测试
-- 可以将`collection.json`和`dmallQuiz`文件导入Postman中，单个接口进行测试
+- 可以将`collection.json`和`dmallQuiz.json`文件导入Postman中，单个接口进行测试
 
 ### 题目要求
 - 使用Jenkins持续集成，基于Docker中的Jenkins镜像
