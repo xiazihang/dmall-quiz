@@ -61,8 +61,8 @@ Note：
 - 使用MySQL作为数据存储，基于Docker中的MySQL镜像
 - 使用Postman对API进行测试
 - 使用Newman对Postman中的API进行集成测试
-- 将Jenkins job的运行日志截图，并命名为`result.png`,如下图
-
+- 将Jenkins job的运行日志截图，并命名为`result.png`，如下图
+![](https://raw.githubusercontent.com/tws-online-quiz/dmall-quiz/master/example.png)
 
 ## 环境要求
 - java8
