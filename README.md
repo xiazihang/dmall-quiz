@@ -53,8 +53,6 @@ Note：
 - 以上角色的登陆和权限验证等安全机制，不在本题要求内
 - 货物信息即商品的快照，该信息生成后不允许修改，用于记录订单创建时该商品的信息
 - 不考虑退换货
-- 使用`newman run collection.json -e dmallQuiz.json`命令运行测试
-- 可以将`collection.json`和`dmallQuiz.json`文件导入Postman中，单个接口进行测试
 
 ### 题目要求
 - 使用Jenkins持续集成，基于Docker中的Jenkins镜像
@@ -76,6 +74,10 @@ Note：
 - 在Jenkins中创建一个Freestyle类型的job，设置trigger使得Github仓库一提交代码就会build，对项目进行持续集成
 - 在Jenkins中配置使用Newman对项目中的API进行测试
 - 此时构建Jenkins job会失败，可以开始根据题目需求完成API
+
+## 如何测试
+- 集成测试：命令行运行 `newman run collection.json -e dmallQuiz.json`
+- 单个接口测试：将`collection.json`和`dmallQuiz.json`文件导入Postman中，进行测试
 
 ## 输出规范
 - 项目应包含京西商城的功能实现代码
