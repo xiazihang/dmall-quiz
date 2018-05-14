@@ -2,19 +2,16 @@ package cn.tws.controller;
 
 import cn.tws.entity.LogisticsRecord;
 import cn.tws.entity.Order;
-import cn.tws.entity.PurchaseItem;
 import cn.tws.repository.InventoryRepository;
 import cn.tws.repository.LogisticsRecordRepository;
 import cn.tws.repository.OrderRepository;
 import cn.tws.utils.LogisticsStatus;
 import cn.tws.utils.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -66,13 +63,13 @@ public class LogisticsRecordController {
         }
 
         if (logisticsStatus == LogisticsStatus.signed) {
-            return signLogisticsRecord(logisticsRecord,orderId);
+            return signLogisticsRecord(logisticsRecord, orderId);
         }
 
         return ResponseEntity.badRequest().build();
     }
 
-    private ResponseEntity signLogisticsRecord(LogisticsRecord logisticsRecord,Long orderId) {
+    private ResponseEntity signLogisticsRecord(LogisticsRecord logisticsRecord, Long orderId) {
         if (logisticsRecord.getLogisticsStatus() != LogisticsStatus.shipping) {
             return ResponseEntity.badRequest().build();
         }

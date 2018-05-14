@@ -70,12 +70,12 @@ public class OrderController {
         return ResponseEntity.created(location).build();
     }
 
-    public PurchaseItem createPurchaseItem(Integer productId, Integer purchaseCount, Long orderId) {
+    private PurchaseItem createPurchaseItem(Integer productId, Integer purchaseCount, Long orderId) {
         Product product = productRepository.findOne(Long.valueOf(productId));
         return purchaseItemRepository.save(new PurchaseItem(product.getId(), orderId, product.getName(), product.getDescription(), product.getPrice(), purchaseCount));
     }
 
-    public int getTotalPrice(List<PurchaseItem> purchaseItemList) {
+    private int getTotalPrice(List<PurchaseItem> purchaseItemList) {
         return purchaseItemList.stream().map(purchaseItem -> purchaseItem.getPurchaseCount() * purchaseItem.getPurchasePrice()).reduce(0, (a, b) -> a + b);
     }
 

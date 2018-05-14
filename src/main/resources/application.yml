@@ -2,7 +2,6 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/dmall_db?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
     username: root
-    password: root
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
@@ -11,3 +10,13 @@ spring:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
 server:
   port: 8083
+
+info:
+  app:
+    name: shopping-mall-quiz
+    description: This is the demo of the homework
+    protocol: http
+  version: 1.0.0
+  contact:
+    author: ThoughtWorks School
+    email: ""
