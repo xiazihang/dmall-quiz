@@ -3,6 +3,7 @@ package cn.tws.controller;
 import cn.tws.entity.Inventory;
 import cn.tws.entity.Product;
 import cn.tws.repository.ProductRepository;
+import cn.tws.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,23 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.Long.valueOf;
+
 @RestController
 @RequestMapping(value = "/products")
 public class ProductController {
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ProductService productService;
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable("id") String id) {
+        Product product = productService.getProduct(valueOf(id));
+
+        return new ResponseEntity<>(product, HttpStatus.OK);
+    }
 
     @PostMapping(value = "")
     public ResponseEntity<?> createProduct(@RequestBody Product product) {
@@ -66,12 +79,5 @@ public class ProductController {
         }
 
         return new ResponseEntity<>(productRepository.findByDescriptionContainingAndName(description, name), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<Object> getProductById(@PathVariable("id") String id) {
-        Optional<Product> product = productRepository.findById(Long.valueOf(id));
-
-        return product.<ResponseEntity<Object>>map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
