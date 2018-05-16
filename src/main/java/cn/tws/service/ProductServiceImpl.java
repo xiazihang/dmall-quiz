@@ -3,9 +3,11 @@ package cn.tws.service;
 import cn.tws.entity.Product;
 import cn.tws.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
